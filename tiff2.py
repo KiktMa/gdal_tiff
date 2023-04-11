@@ -59,7 +59,7 @@ class GRID:
 
 if __name__ == "__main__":
     # os.chdir(r'E:/data')  # 切换路径到待处理图像所在文件夹
-    file_name = r"D:\JavaConsist\MapData\out1part2.tif"
+    file_name = r"D:\test_tif\GeoSOT_Standard\caijian_zhuanhuan.tif"
     dataset = gdal.Open(file_name)
     minx, xres, xskew, maxy, yskew, yres = dataset.GetGeoTransform()
     proj, geotrans, data= GRID().read_img(file_name)  # 读数据
@@ -67,19 +67,19 @@ if __name__ == "__main__":
     print(geotrans)
     print(data.shape)
     width, height = data.shape
-    size = 256
-    for j in range(height // size):  # 切割成256*256小图
+    size = 512
+    for j in range(height // size):  # 切割成512*512小图
         for i in range(width // size):
             if(j == height//size):
                 cur_image = data[i * size:(i + 1) * size, j * size:(j + 1) * size]
                 lon = minx + xres * size * j
                 lat = maxy + yres * (i * size)
-                GRID().write_img(r'D:\test_tif\qiefen/{}_{}.tif'.format(i, j), proj,
+                GRID().write_img(r'D:\test_tif\18level/{}_{}.tif'.format(i, j), proj,
                                  lon, lat, xres, yres, cur_image)  # 写数据
             else:
                 cur_image = data[i*size:(i + 1) * size, j * size:(j + 1) * size]
                 lon=minx+xres*size*j
                 lat=maxy+yres*(i*size)
-                GRID().write_img(r'D:\test_tif\qiefen/{}_{}.tif'.format(i, j), proj,
+                GRID().write_img(r'D:\test_tif\18level/{}_{}.tif'.format(i, j), proj,
                                  lon, lat, xres, yres, cur_image)  # 写数据
     print("批量切割完成")
