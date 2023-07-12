@@ -1,9 +1,6 @@
 import matplotlib.pyplot as plt
 
 
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.rcParams['axes.unicode_minus'] = False
-
 # 定义数据
 data = {
     'PostGre+PostGis': [3, 7, 16, 35, 58],
@@ -19,8 +16,8 @@ for label, values in data.items():
 
 # 添加图例、标题、轴标签等
 plt.legend()
-plt.xlabel('影像大小(GB)')
-plt.ylabel('构建金字塔并入库(min)')
+plt.xlabel('raster data size(GB)')
+plt.ylabel('Build pyramid and put it into storage(min)')
 
 # 显示图形
 plt.show()

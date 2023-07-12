@@ -10,8 +10,8 @@ accumulo = [8, 15, 22, 41]
 # 绘图
 plt.plot(sizes, postgres, label="PostgreSQL")
 plt.plot(sizes, accumulo, label="Accumulo")
-plt.xlabel("范围(km²)")
-plt.ylabel("读取时间(s)")
+plt.xlabel("Extent(km²)")
+plt.ylabel("Read Time(s)")
 plt.legend()
 
 # 显示图形
