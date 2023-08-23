@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 
 # 数据
 pointcloud = [0.01, 0.5, 1.7, 5, 10, 30]
@@ -6,22 +7,31 @@ hbase = [2734, 35174, 84376, 225347, 383746, 1208314]
 accumulo = [456, 13537, 49753, 164070, 294644, 974677]
 mysql = [1460, 67359, 211131, 644224, 1244455, 2554430]
 
-# 创建折线图
-plt.figure(figsize=(10, 6))
-plt.plot(pointcloud, hbase, marker='o', label='HBase')
-plt.plot(pointcloud, accumulo, marker='o', label='Accumulo')
-plt.plot(pointcloud, mysql, marker='o', label='MySQL')
+# 创建图表
+fig = plt.figure(figsize=(10, 8))
+gs = GridSpec(2, 1, height_ratios=[20, 1])  # 2 行，1 列的网格，高度比例为 4:1
 
-# 添加标题和标签
-plt.title('Comparison of storage time between different databases')
-plt.xlabel('PointCloud Size(million)')
-plt.ylabel('Time (ms)')
+# 上半部分：折线图
+ax1 = fig.add_subplot(gs[0])
+ax1.plot(pointcloud, hbase, marker='o', label='HBase')
+ax1.plot(pointcloud, accumulo, marker='o', label='Accumulo')
+ax1.plot(pointcloud, mysql, marker='o', label='MySQL')
+ax1.set_title('Query Performance Comparison')
+ax1.set_xlabel('PointCloud Size (million)')
+ax1.set_ylabel('Time (ms)')
+ax1.legend()
+ax1.grid(True)
 
-# 添加图例
-plt.legend()
+# 下半部分：表格
+ax2 = fig.add_subplot(gs[1])
+ax2.axis('off')  # 关闭下半部分的坐标轴
+table_data = [hbase, accumulo, mysql]
+row_labels = ['HBase(ms)', 'Accumulo(ms)', 'MySQL(ms)']
+col_labels = ['0.01', '0.5', '1', '5', '10', '30']
+ax2.table(cellText=table_data, rowLabels=row_labels, colLabels=col_labels, cellLoc='center', loc='center')
 
-# 显示图表
-plt.grid(True)
+# 调整图表布局，以便表格和折线图之间有间隔
+plt.subplots_adjust(hspace=0.25)
 
 # 保存
 plt.savefig('performance_comparison.png')
