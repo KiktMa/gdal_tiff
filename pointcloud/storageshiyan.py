@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
+# 设置中文字体
+plt.rcParams["font.sans-serif"] = ["SimHei"]
+
 # 数据
 pointcloud = [0.01, 0.5, 1.7, 5, 10, 30]
 hbase = [2734, 35174, 84376, 225347, 383746, 1208314]
@@ -16,9 +19,9 @@ ax1 = fig.add_subplot(gs[0])
 ax1.plot(pointcloud, hbase, marker='o', label='HBase')
 ax1.plot(pointcloud, accumulo, marker='o', label='Accumulo')
 ax1.plot(pointcloud, mysql, marker='o', label='MySQL')
-ax1.set_title('Query Performance Comparison')
-ax1.set_xlabel('PointCloud Size (million)')
-ax1.set_ylabel('Time (ms)')
+ax1.set_title('不同存储模型对点云数据进行存储时间对比')
+ax1.set_xlabel('点云数据量 (百万)')
+ax1.set_ylabel('存储耗时(ms)')
 ax1.legend()
 ax1.grid(True)
 

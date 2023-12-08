@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 
+# 设置中文字体
+plt.rcParams["font.sans-serif"] = ["SimHei"]
+
 data = {
     "accumulo": [249, 777, 1358, 12818, 56015, 105945, 206843],
     "hbase": [3749, 20318, 47155, 299967, 1209378, 1963400, 4682559],
@@ -15,9 +18,10 @@ plt.plot(point_cloud_sizes, data["mysql"], marker='o', label="MySQL")
 
 plt.xscale("log")  # Use logarithmic scale for x-axis
 plt.yscale("log")  # Use logarithmic scale for y-axis
-plt.xlabel("Point Cloud Size")
-plt.ylabel("Time (ms)")
-plt.title("Query Time for Different Databases vs. Point Cloud Size")
+plt.xlabel("点云数据量")
+plt.ylabel("读取耗时(ms)")
+plt.title("不同存储模型点云查询时间对比")
 plt.legend()
 plt.grid(True)
+plt.savefig("query_time_vs_point_cloud.png")
 plt.show()
