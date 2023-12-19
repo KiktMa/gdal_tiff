@@ -60,27 +60,27 @@ class GRID:
 
 if __name__ == "__main__":
     # os.chdir(r'E:/data')  # 切换路径到待处理图像所在文件夹
-    file_name = r"C:\Users\mj\Documents\WeChat Files\wxid_daf8d34bzqvz22\FileStorage\File\2023-11\google_18s_nogl_长沙市_开福区_翡翠湾_112.985_28.286_112.998_28.296.tif"
+    file_name = r"C:\Users\mj\Code\tifdata\taiwan.tif"
     dataset = gdal.Open(file_name)
     minx, xres, xskew, maxy, yskew, yres = dataset.GetGeoTransform()
     proj, geotrans, data= GRID().read_img(file_name)  # 读数据
-    print(proj)
-    print(geotrans)
-    print(data.shape)
+    # print(proj)
+    # print(geotrans)
+    # print(data.shape)
     tmp, width, height = data.shape
-    size = 512
+    size = 1024
     for i in range(height // size):  # 切割成512*512小图
         for j in range(width // size):
             if(j == height//size):
-                cur_image = data[i * size:(i + 1) * size, j * size:(j + 1) * size]
+                cur_image = data[:,i * size:(i + 1) * size, j * size:(j + 1) * size]
                 lon = minx + xres * size * j
                 lat = maxy + yres * (i * size)
-                GRID().write_img(r'D:\test_tif\18level/{}_{}.tif'.format(i, j), proj,
+                GRID().write_img(r'C:\Users\mj\Code\tifdata\taiwancut/{}_{}.tif'.format(i, j), proj,
                                  lon, lat, xres, yres, cur_image)  # 写数据
             else:
-                cur_image = data[i*size:(i + 1) * size, j * size:(j + 1) * size]
+                cur_image = data[:,i*size:(i + 1) * size, j * size:(j + 1) * size]
                 lon=minx+xres*size*j
                 lat=maxy+yres*(i*size)
-                GRID().write_img(r'D:\test_tif\18level/{}_{}.tif'.format(i, j), proj,
+                GRID().write_img(r'C:\Users\mj\Code\tifdata\taiwancut/{}_{}.tif'.format(i, j), proj,
                                  lon, lat, xres, yres, cur_image)  # 写数据
     print("批量切割完成")
