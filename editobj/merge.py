@@ -1,95 +1,95 @@
-######################
-# 同时将两个模型显示在一起，也可以将两个模型拼接成为一个模型
-######################
-from cv2 import scaleAdd
-import trimesh
-import argparse
 import numpy as np
-import os
-import scipy.io as scio
-import math
 import open3d as o3d
+import trimesh
+import math
 
-# 根据输入的旋转度数生成相应的旋转矩阵
-def make_rotate(rx, ry, rz):
-    sinX = np.sin(rx)
-    sinY = np.sin(ry)
-    sinZ = np.sin(rz)
+def load_obj(file_path):
+    mesh = trimesh.load(file_path)
+    return mesh
 
-    cosX = np.cos(rx)
-    cosY = np.cos(ry)
-    cosZ = np.cos(rz)
+def load_obj_with_texture(file_path):
+    mesh = o3d.io.read_triangle_mesh(file_path)
+    return mesh
 
-    Rx = np.zeros((3, 3))
-    Rx[0, 0] = 1.0
-    Rx[1, 1] = cosX
-    Rx[1, 2] = -sinX
-    Rx[2, 1] = sinX
-    Rx[2, 2] = cosX
+def map_vertices_to_texture_coordinates(vertices, uv_offset_and_scale):
+    mapped_texture_coordinates = []
 
-    Ry = np.zeros((3, 3))
-    Ry[0, 0] = cosY
-    Ry[0, 2] = sinY
-    Ry[1, 1] = 1.0
-    Ry[2, 0] = -sinY
-    Ry[2, 2] = cosY
+    for i in range(0, len(vertices), 8):
+        u1 = vertices[i + 4]
+        u2 = vertices[i + 5]
+        v1 = vertices[i + 6]
+        v2 = vertices[i + 7]
 
-    Rz = np.zeros((3, 3))
-    Rz[0, 0] = cosZ
-    Rz[0, 1] = -sinZ
-    Rz[1, 0] = sinZ
-    Rz[1, 1] = cosZ
-    Rz[2, 2] = 1.0
+        u = u2 * 256 + u1
+        v = v2 * 256 + v1
 
-    R = np.matmul(np.matmul(Rz, Ry), Rx)
-    return R
+        ut = (u + uv_offset_and_scale[0]) * uv_offset_and_scale[2]
+        vt = (v + uv_offset_and_scale[1]) * uv_offset_and_scale[3]
 
+        # if texture_format == 6:
+        #     vt = 1 - vt
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--obj1_path", type=str, default=r"C:\Users\mj\Code\Obj\无纹理的obj\dress3-iso.obj")
-    parser.add_argument("--obj2_path", type=str, default=r"C:\Users\mj\Code\Obj\无纹理的obj\angel.obj")
-    parser.add_argument("--out_path", type=str, default=r"C:\Users\mj\Code\Obj\mesh")
-    parser.add_argument("--save_obj", action="store_true", default=True)
-    args = parser.parse_args()
+        mapped_texture_coordinates.append([ut, vt])
 
-    # Load model
-    mesh1 = trimesh.load(args.obj1_path)
+    return np.array(mapped_texture_coordinates)
 
-    # To get vertices and faces for next steps
-    v1 = mesh1.vertices  # 这样得到的v,f格式是trimesh 内置的格式，不能直接用于其它计算，需要转换为numpy
-    f1 = mesh1.faces
-    v1 = np.array(v1)
-    f1 = np.array(f1)
+def merge_meshes(mesh2,path):
 
-    # #rotate(optional)
-    R = make_rotate(0, math.radians(-50), 0)
-    v1 = np.dot(v1, R)
+    R = 6371070
+    vts = []
+    # faces = []
+    v2 = mesh2.vertices
+    max_v2 = np.max(v2,axis=0)
+    min_v2 = np.min(v2,axis=0)
+    lat_max = math.asin(max_v2[2]/R)*180/math.pi
+    lon_max = math.acos(max_v2[0]/(math.cos(math.asin(max_v2[2]/R))*R))*180/math.pi
+    lat_min = math.asin(min_v2[2] / R) * 180 / math.pi
+    lon_min = math.acos(min_v2[0] / (math.cos(math.asin(min_v2[2] / R)) * R)) * 180 / math.pi
+    faces = mesh2.faces
+    normals = mesh2.vertex_normals
+    for i in v2:
+        vt = []
+        # -2994562.87901422
+        # 4934768.3642328875 - 2994600.8305515703
+        # 4934764.232818925
+        lat = math.asin(i[2]/R)*180/math.pi
+        lon = math.acos(i[0]/(math.cos(math.asin(i[2]/R))*R))*180/math.pi
+        vt1 = 1-((lon-lon_min)/(lon_max-lon_min))
+        # if vt1 < 0: vt1 = 0
+        # if vt1 > 1: vt1 = 1
+        vt.append(vt1)
+        vt2 = (lat - lat_min) / (lat_max - lat_min)
+        # if vt2 < 0: vt2 = 0
+        # if vt2 > 1: vt2 = 1
+        vt.append(vt2)
+        vts.append(vt)
 
-    mesh2 = trimesh.load(args.obj2_path)
-    v2 = mesh2.vertices  # 这样得到的v,f格式是trimesh 内置的格式，不能直接用于其它计算，需要转换为numpy
+    with open(path, 'w') as f:
+        for vertex in v2:
+            f.write(f"v {vertex[0]} {vertex[1]} {vertex[2]}\n")
+
+        for vt in vts:
+            f.write(f"vt {vt[0]} {vt[1]}\n")
+
+        for vn in normals:
+            f.write(f"vn {vn[0]} {vn[1]} {vn[2]}\n")
+
+        for face in faces:
+            f.write(f"f {face[0]+1}/{face[0]+1}/{face[0]+1} {face[1]+1}/{face[1]+1}/{face[1]+1} {face[2]+1}/{face[2]+1}/{face[2]+1}\n")
+
     f2 = mesh2.faces
     v2 = np.array(v2)
     f2 = np.array(f2)
 
-    # ################other steps#################
-    # #registration(optional)
-    # mesh2t= trimesh.Trimesh(vertices = v2, faces = f2)
-    # mesh_to_other = trimesh.registration.mesh_other(mesh1, mesh2t, samples=500, scale=False, icp_first=10, icp_final=50)
+def main():
+    # 加载带有纹理信息的OBJ文件
+    mesh_with_texture = load_obj_with_texture(r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\model.obj")
 
-    # matching
-    f2 = np.array(f2) + np.shape(v1)[0]
-    v = np.concatenate((v1, v2), axis=0)
-    f = np.concatenate((f1, f2), axis=0)
+    # 加载没有纹理信息的OBJ文件
+    mesh_without_texture = load_obj(r"C:\Users\mj\Code\Obj\merge1.obj")
+    outfile_obj = r"C:\Users\mj\Code\Obj\new_obj.obj"
+    # 合并两个Mesh对象
+    merged_mesh = merge_meshes(mesh_without_texture,outfile_obj)
 
-    # ############################################
-    # Transfer result to mesh
-    obj = trimesh.Trimesh(vertices=v, faces=f)
-    # To imshow
-    # obj.show()
-    if args.save_obj:
-        # To save
-        base = os.path.basename(args.out_path)
-        name = os.path.splitext(base)[0]
-        print(args.out_path+": "+name)
-        obj.export(f"{args.out_path}/{name}1.obj")  # 保存为obj
+if __name__ == "__main__":
+    main()
