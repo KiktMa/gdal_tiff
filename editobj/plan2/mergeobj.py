@@ -122,11 +122,6 @@ def merge_meshes(mesh1_v, mesh2):
     else:
         vertex_normals_combined = np.zeros((0, 3))
 
-    if len(vertex_normals1) > 0:
-        vertex_normals_combined = np.concatenate((vertex_normals1, np.zeros_like(vertex_normals1)))
-    else:
-        vertex_normals_combined = np.zeros((0, 3))
-
     # 创建合并后的Mesh对象
     # mesh_combined = o3d.geometry.TriangleMesh()
     obj = trimesh.Trimesh(vertices=v, faces=f, vertex_normals=vertex_normals_combined)
