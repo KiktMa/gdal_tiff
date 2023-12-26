@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import open3d as o3d
 import trimesh
@@ -6,10 +8,10 @@ import json, copy
 import removeusemtl
 import add_texture_in_mergeobj
 
-def wgs_to_metter(x, y, z):
+def wgs_to_metter(x, y):
     x = x * math.pi / 180
     y=y*math.pi/180
-    R=6371070
+    R=6371068
     a=(math.cos(y)*R)*math.cos(x)
     b=(math.cos(y)*R)*math.sin(x)
     c=math.sin(y)*R
@@ -23,7 +25,7 @@ def wgs_to_metter(x, y, z):
 def wgs_to_metter_height(x, y, z):
     x = x * math.pi / 180
     y=y*math.pi/180
-    R=6371070+z
+    R=6371068+z
     a=(math.cos(y)*R)*math.cos(x)
     b=(math.cos(y)*R)*math.sin(x)
     c=math.sin(y)*R
@@ -53,8 +55,8 @@ def geojson_to_obj(geojson_file, obj_file):
         elif feature['geometry']['type'] == 'Polygon':
             coordinates = feature['geometry']['coordinates'][0]  # Assuming only exterior ring
             coordinates_up=copy.deepcopy(coordinates)
-            for i in coordinates:
-                i[0], i[1], z=wgs_to_metter(i[0], i[1],30.0)
+            for i in coordinates: # 建筑物屋顶预测图及底面点
+                i[0], i[1], z=wgs_to_metter(i[0], i[1])
                 # i[0]-=174.064252
                 # i[1]-=463.469967
                 # z+=360.203842594102
@@ -63,15 +65,17 @@ def geojson_to_obj(geojson_file, obj_file):
                 # print(x,y,z)
             vertices.extend(coordinates)
             faces.append(list(range(len(vertices) - len(coordinates), len(vertices))))
-            for i in coordinates_up:
-                i[0], i[1], z = wgs_to_metter_height(i[0], i[1], 30.0)
+            hight = random.randint(6, 20)
+            for i in coordinates_up: # 顶面
+                i[0], i[1], z = wgs_to_metter_height(i[0], i[1], hight)
                 # i[0]-=174.064252
                 # i[1]-=463.469967#绿色
                 # z+=360.203842594102#蓝36.69913
                 i.append(z)
             vertices.extend(coordinates_up)
             faces.append(list(range(len(vertices) - len(coordinates), len(vertices))))
-            for i in range(len(coordinates) - 1):
+            for i in range(len(coordinates) - 1): # 侧面顶点连接
+                faces.append("122")
                 faces.append([len(vertices) - 2 * len(coordinates) + i, len(vertices) - 2 * len(coordinates) + i + 1,
                               len(vertices) - len(coordinates) + i + 1, len(vertices) - len(coordinates) + i])
 
@@ -80,6 +84,9 @@ def geojson_to_obj(geojson_file, obj_file):
                 f.write(f"v {vertex[0]} {vertex[1]} {vertex[2]}\n")
 
             for face in faces:
+                if face=="122":
+                    f.write("# cemian\n")
+                    continue
                 f.write("f " + " ".join(str(v + 1) for v in face) + "\n")
 
 def load_obj(file_path):
@@ -135,12 +142,12 @@ def merge_meshes(mesh1_v, mesh2):
 def main():
     # 建筑物json转obj
     geojson_file = r"C:\Users\mj\Code\Obj\new.json"  # json文件地址
-    bulid_obj_file = r"C:\Users\mj\Code\Obj\OBJ\new.obj"  # 建筑物obj临时文件
+    bulid_obj_file = r"C:\Users\mj\Code\Obj\OBJ\new11.obj"  # 建筑物obj临时文件
     geojson_to_obj(geojson_file, bulid_obj_file)
 
     # 由于地理obj文件由多个切片构成，首先对其进行合并，使用cloudcompare软件对文件进行合并
     input_file_path = r"C:\Users\mj\Code\Obj\removeuse\Merged mesh.obj"  # 合并后的地理obj文件地址
-    output_file_path = r"C:\Users\mj\Code\Obj\removeuse\mesh.obj"  # 删除合并地理obj文件中的usemtl行（处理后的文件地址）
+    output_file_path = r"C:\Users\mj\Code\Obj\removeuse\mesh11.obj"  # 删除合并地理obj文件中的usemtl行（处理后的文件地址）
 
     # 删除合并地理obj文件中的usemtl行
     removeusemtl.remove_usemtl_lines(input_file_path, output_file_path)
@@ -155,7 +162,7 @@ def main():
     merged_mesh = merge_meshes(mesh_with_v, mesh_without_texture)
 
     # 对合并后的obj进行纹理贴图，outfile_obj为纹理贴图后的保存地址
-    outfile_obj = r"C:\Users\mj\Code\Obj\merge\new_obj3.obj"
+    outfile_obj = r"C:\Users\mj\Code\Obj\merge\new_obj111.obj"
     add_texture_in_mergeobj.merge_meshes(merged_mesh, outfile_obj)
 
 if __name__ == "__main__":
