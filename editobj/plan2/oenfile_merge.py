@@ -44,7 +44,7 @@ def merge_obj(input_paths, output_path):
             outfile.write(f"f {' '.join(['/'.join(map(str, v)) for v in face])}\n")
 
 # if __name__ == "__main__":
-#     input_paths = [r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\model.obj"]  # 替换为实际的OBJ文件路径
+#     input_paths = [r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\model.obj"]  # 需要合并的OBJ文件路径
 #     output_path = r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\merged_obj.obj"  # 输出OBJ文件路径
 #
 #     merge_obj(input_paths, output_path)

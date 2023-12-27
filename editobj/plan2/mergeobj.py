@@ -7,6 +7,7 @@ import math
 import json, copy
 import removeusemtl
 import add_texture_in_mergeobj
+import oenfile_merge
 
 def wgs_to_metter(x, y):
     x = x * math.pi / 180
@@ -148,6 +149,9 @@ def main():
     # 由于地理obj文件由多个切片构成，首先对其进行合并，使用cloudcompare软件对文件进行合并
     input_file_path = r"C:\Users\mj\Code\Obj\removeuse\Merged mesh.obj"  # 合并后的地理obj文件地址
     output_file_path = r"C:\Users\mj\Code\Obj\removeuse\mesh11.obj"  # 删除合并地理obj文件中的usemtl行（处理后的文件地址）
+
+    # # 将给的地理obj中所有几何体合并为一个几何体结构
+    # oenfile_merge.merge_obj(input_file_path,output_file_path)
 
     # 删除合并地理obj文件中的usemtl行
     removeusemtl.remove_usemtl_lines(input_file_path, output_file_path)
