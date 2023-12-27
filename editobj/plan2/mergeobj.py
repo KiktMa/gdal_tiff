@@ -1,11 +1,9 @@
 import random
-
 import numpy as np
-import open3d as o3d
 import trimesh
 import math
 import json, copy
-import removeusemtl
+# import removeusemtl
 import add_texture_in_mergeobj
 import oenfile_merge
 
@@ -94,10 +92,6 @@ def load_obj(file_path):
     mesh = trimesh.load(file_path)
     return mesh
 
-def load_obj_with_texture(file_path):
-    mesh = o3d.io.read_triangle_mesh(file_path)
-    return mesh
-
 def merge_meshes(mesh1_v, mesh2):
     # 获取顶点和面信息
     vertices1 = mesh1_v.vertices
@@ -133,10 +127,6 @@ def merge_meshes(mesh1_v, mesh2):
     # 创建合并后的Mesh对象
     # mesh_combined = o3d.geometry.TriangleMesh()
     obj = trimesh.Trimesh(vertices=v, faces=f, vertex_normals=vertex_normals_combined)
-    # mesh_combined.vertices = o3d.utility.Vector3dVector(v)
-    # mesh_combined.vertices = o3d.utility.Vector3dVector(f)
-    # mesh_combined.triangle_uvs = o3d.utility.Vector2dVector(triangle_uvs_combined)
-    # mesh_combined.vertex_normals = o3d.utility.Vector3dVector(vertex_normals_combined)
 
     return obj
 
@@ -147,17 +137,17 @@ def main():
     geojson_to_obj(geojson_file, bulid_obj_file)
 
     # 由于地理obj文件由多个切片构成，首先对其进行合并，使用cloudcompare软件对文件进行合并
-    input_file_path = r"C:\Users\mj\Code\Obj\removeuse\Merged mesh.obj"  # 合并后的地理obj文件地址
-    output_file_path = r"C:\Users\mj\Code\Obj\removeuse\mesh11.obj"  # 删除合并地理obj文件中的usemtl行（处理后的文件地址）
-
-    # # 将给的地理obj中所有几何体合并为一个几何体结构
-    # oenfile_merge.merge_obj(input_file_path,output_file_path)
+    # input_file_path = r"C:\Users\mj\Code\Obj\removeuse\Merged mesh.obj"  # 合并后的地理obj文件地址
+    input_original_file_path = [r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\model.obj"] # 谷歌下载地理信息obj文件地址
+    merge_multiple_geometry_path = r"C:\Users\mj\Code\Obj\removeuse\mesh12.obj"  # 删除合并地理obj文件中的usemtl行（处理后的文件地址）
+    # # 将给的地理obj中所有几何体合并为一个几何体结构，并且
+    oenfile_merge.many_geometry_merge2one(input_original_file_path,merge_multiple_geometry_path)
 
     # 删除合并地理obj文件中的usemtl行
-    removeusemtl.remove_usemtl_lines(input_file_path, output_file_path)
+    # removeusemtl.remove_usemtl_lines(merge_multiple_geometry_path, merge_multiple_geometry_path)
 
     # 加载处理后的地理obj文件
-    mesh_with_v = load_obj(output_file_path)
+    mesh_with_v = load_obj(merge_multiple_geometry_path)
 
     # 加载没有纹理信息的OBJ文件（建筑物obj文件地址）
     mesh_without_texture = load_obj(bulid_obj_file)
@@ -166,7 +156,7 @@ def main():
     merged_mesh = merge_meshes(mesh_with_v, mesh_without_texture)
 
     # 对合并后的obj进行纹理贴图，outfile_obj为纹理贴图后的保存地址
-    outfile_obj = r"C:\Users\mj\Code\Obj\merge\new_obj111.obj"
+    outfile_obj = r"C:\Users\mj\Code\Obj\merge\new_obj333.obj"
     add_texture_in_mergeobj.merge_meshes(merged_mesh, outfile_obj)
 
 if __name__ == "__main__":

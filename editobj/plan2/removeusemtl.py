@@ -10,8 +10,8 @@ def remove_usemtl_lines(input_path, output_path):
     with open(output_path, 'w') as outfile:
         outfile.writelines(lines_without_usemtl)
 
-if __name__ == "__main__":
-    input_file_path = r"C:\Users\mj\Desktop\Merged mesh.obj"
-    output_file_path = r"C:\Users\mj\Desktop\mesh.obj"
-
-    remove_usemtl_lines(input_file_path, output_file_path)
+# if __name__ == "__main__":
+#     input_file_path = r"C:\Users\mj\Desktop\Merged mesh.obj"
+#     output_file_path = r"C:\Users\mj\Desktop\mesh.obj"
+#
+#     remove_usemtl_lines(input_file_path, output_file_path)

@@ -1,4 +1,5 @@
-def merge_obj(input_paths, output_path):
+import removeusemtl
+def many_geometry_merge2one(input_paths, output_path):
     # 存储所有集合体的顶点、法线、纹理坐标和面
     all_vertices = []
     all_normals = []
@@ -43,6 +44,8 @@ def merge_obj(input_paths, output_path):
         for face in all_faces:
             outfile.write(f"f {' '.join(['/'.join(map(str, v)) for v in face])}\n")
 
+    # 删除合并几何体后的obj中的usemtl行
+    removeusemtl.remove_usemtl_lines(output_path, output_path)
 # if __name__ == "__main__":
 #     input_paths = [r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\model.obj"]  # 需要合并的OBJ文件路径
 #     output_path = r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\merged_obj.obj"  # 输出OBJ文件路径

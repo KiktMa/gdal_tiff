@@ -1,43 +1,5 @@
 import numpy as np
-import trimesh
 import math
-
-def load_obj(file_path):
-    mesh = trimesh.load(file_path)
-    return mesh
-
-def process_obj(input_path, output_path):
-    with open(input_path, 'r') as infile:
-        lines = infile.readlines()
-
-    # 寻找第一次出现 "usemtl cemian_rgb" 的行
-    usemtl_line_index = -1
-    for i, line in enumerate(lines):
-        if line.startswith("usemtl cemian_rgb"):
-            usemtl_line_index = i
-            break
-
-    if usemtl_line_index == -1:
-        # 如果没有找到 "usemtl cemian_rgb" 行，不进行处理
-        with open(output_path, 'w') as outfile:
-            outfile.writelines(lines)
-        return
-
-    # 找到 "usemtl cemian_rgb" 行后，将其下的所有 "f" 行移动到该行的前面
-    f_lines = []
-    i = usemtl_line_index + 1
-    while i < len(lines) and not lines[i].startswith("usemtl"):
-        if lines[i].startswith("f"):
-            f_lines.append(lines.pop(i))
-        else:
-            i += 1
-
-    # 将 "f" 行插入到 "usemtl cemian_rgb" 行的前面
-    lines[usemtl_line_index + 1:usemtl_line_index + 1] = f_lines
-
-    # 将处理后的结果写入输出文件
-    with open(output_path, 'w') as outfile:
-        outfile.writelines(lines)
 
 def merge_meshes(mesh2,path):
 
