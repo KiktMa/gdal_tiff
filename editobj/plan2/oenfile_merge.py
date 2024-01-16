@@ -50,4 +50,4 @@ def many_geometry_merge2one(input_paths, output_path):
 #     input_paths = [r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\model.obj"]  # 需要合并的OBJ文件路径
 #     output_path = r"C:\Users\mj\Code\Obj\OBJ\3143415262517261-20-962\merged_obj.obj"  # 输出OBJ文件路径
 #
-#     merge_obj(input_paths, output_path)
+#     many_geometry_merge2one(input_paths, output_path)
