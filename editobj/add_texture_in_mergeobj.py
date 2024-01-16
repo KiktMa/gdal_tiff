@@ -6,8 +6,8 @@ def merge_meshes(mesh2,path):
     vts = []
     # faces = []
     v2 = mesh2.vertices
-    max_v2 = np.max(v2,axis=0)
-    min_v2 = np.min(v2,axis=0)
+    max_v2 = np.max(v2, axis=0)
+    min_v2 = np.min(v2, axis=0)
     R = 6371068
     lat_max = math.asin(max_v2[2]/R)*180/math.pi - 0.00002
     lon_max = math.acos(max_v2[0]/(math.cos(math.asin(max_v2[2]/R))*R))*180/math.pi
