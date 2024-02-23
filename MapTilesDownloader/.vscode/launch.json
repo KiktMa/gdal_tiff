@@ -1,0 +1,50 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: 当前文件",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": [
+                // "-s", 
+                // "25.035368204527927",
+                // "-n",
+                // "25.037106020904716", 
+                // "-w",
+                // "121.53962207411472", 
+                // "-e",
+                // "121.541969503934",
+                // "-s", "25.032766312579923", "-w", "121.51583703307517", "-n", "25.038672156015146", "-e", "121.52439588724303",
+                // "-k",
+                // "AIzaSyD4HU7Yy05pTAodFGXEjHaXc49YbBCJstg",
+                // "-d",
+                // "${workspaceFolder}\\zhongzhengjlt",
+                // "-g",
+                // "${workspaceFolder}\\zhongzhengjlt\\zhongzhengjlt.json",
+                // "-s",
+                // "25.1671383600502",
+                // "-w",
+                // "121.53967284003068",
+                // "-n",
+                // "25.173370455279663",
+                // "-e",
+                // "121.5591707834255",
+                // "-d",
+                // "${workspaceFolder}\\download\\taibei\\",
+                // "-k",
+                // "AIzaSyBihOYEcycPL4u1UZBzboCr3Ql4AaZgrQk"
+                //"AIzaSyD4HU7Yy05pTAodFGXEjHaXc49YbBCJstg",
+                //"-s", "24.008326169957822", "-w", "120.34186303019584", "-n", "25.35197797363522", "-e", "122.01784337058514", "-d", "${workspaceFolder}\\download\\taibei", "-k", "AIzaSyD4HU7Yy05pTAodFGXEjHaXc49YbBCJstg"
+                //"-s", "24.86702525109798", "-w", "121.02679610064533", "-n", "25.306083627211063", "-s", "122.01581190810509", "-d", "${workspaceFolder}\\taibei", "-g",  "${workspaceFolder}\\taibei\\taibei-north.json"
+                "-d", "${workspaceFolder}\\taibei", "-g",  "${workspaceFolder}\\taibei\\taibei-north.json", //"-k", "AIzaSyAg3kvtU6wh1BTxO0or_5hovV6YJV-m-LQ", "AIzaSyC9BsFXN7nV2uNlPjk3TfAArSA5FiJOBvc", "AIzaSyD-sJKuhCVqR6bpkRWBgTyxnszApF9_U-M"
+                //"-s", "21.8926402707983", "-w", "119.27459332875371", "-n", "25.35197797363522", "-e", "122.01784337058514", "-g",  "${workspaceFolder}\\taiwan.json"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
