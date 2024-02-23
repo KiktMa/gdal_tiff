@@ -6,12 +6,12 @@ plt.rcParams["font.sans-serif"] = ["SimHei"]
 
 # 数据
 data = {
-    'PostGresql+PostGis': [3, 7, 16, 35, 58],
-    'ArcGis+FileSystem': [2, 9, 23, 49, 70],
-    'Geotrellis': [5, 13, 23, 66, 89],
-    'Geotrellis+GeoSOT': [2.9, 5, 9, 29, 45]
+    'PostGresql+PostGis': [3, 7, 16, 35, 56.4],
+    'ArcGis+FileSystem': [2, 9, 23, 49, 79.8],
+    'Geotrellis': [5, 13, 23, 66, 87.9],
+    'Geotrellis+GeoSOT': [2.9, 5, 9, 29, 43.5]
 }
-x = [0.1, 0.5, 1, 3.7, 5.5]
+x = [0.1, 0.5, 1, 3.7, 5.3]
 
 # 为折线图和表格创建一个图形和两个子图形
 fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [20, 1]}, figsize=(8, 6))
@@ -35,5 +35,5 @@ ax1.set_ylabel('构建金字塔并入库(min)')
 ax2.axis('off')
 
 plt.subplots_adjust(hspace=0.15)  # 调整子地块之间的间距
-# plt.savefig('fig5.png')
+plt.savefig('fig5.png')
 plt.show()

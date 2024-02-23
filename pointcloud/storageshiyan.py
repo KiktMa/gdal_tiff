@@ -37,5 +37,5 @@ ax2.table(cellText=table_data, rowLabels=row_labels, colLabels=col_labels, cellL
 plt.subplots_adjust(hspace=0.25)
 
 # 保存
-plt.savefig('performance_comparison.png')
+# plt.savefig('performance_comparison.png')
 plt.show()
